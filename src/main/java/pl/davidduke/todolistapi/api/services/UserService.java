@@ -8,16 +8,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.davidduke.todolistapi.api.dto.UserCreateDto;
-import pl.davidduke.todolistapi.api.dto.ResponseUserDto;
 import pl.davidduke.todolistapi.api.dto.UserListDto;
-import pl.davidduke.todolistapi.api.exceptions.EmailIsAlreadyUseException;
+import pl.davidduke.todolistapi.api.exceptions.EmailAlreadyUseException;
 import pl.davidduke.todolistapi.api.exceptions.UserNotFoundException;
 import pl.davidduke.todolistapi.api.util.UserMapper;
 import pl.davidduke.todolistapi.storage.entities.UserEntity;
 import pl.davidduke.todolistapi.storage.repositories.UserRepository;
 
 import java.util.Locale;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -71,7 +70,7 @@ public class UserService {
         String newEmail = userToBeCreated.getEmail();
 
         if (isEmailAlreadyUse(newEmail)) {
-            throw new EmailIsAlreadyUseException(
+            throw new EmailAlreadyUseException(
                     newEmail,
                     locale,
                     messageSource
@@ -93,5 +92,76 @@ public class UserService {
         return userRepository
                 .findByEmail(email)
                 .isPresent();
+    }
+
+    @Transactional
+    public ResponseUserDto patchUser(
+            Long id,
+            UserPatchDto userToBeUpdated,
+            Locale locale
+    ) {
+        String newEmail = userToBeUpdated.getEmail();
+
+        if (newEmail != null && isEmailAlreadyUse(newEmail)) {
+            throw new EmailAlreadyUseException(
+                    newEmail,
+                    locale,
+                    messageSource
+            );
+        }
+
+        return userRepository
+                .findById(id)
+                .map(
+                        user -> {
+                            mapper.patchUserEntity(userToBeUpdated, user);
+
+                            UserEntity updatedUser = userRepository.save(user);
+
+                            return mapper.userEntityToResponseUserDto(updatedUser);
+                        }
+                )
+                .orElseThrow(
+                        () -> new UserNotFoundException(
+                                id,
+                                locale,
+                                messageSource
+                        )
+                );
+    }
+
+    @Transactional
+    public ResponseUserDto putUser(
+            Long id,
+            UserCreateDto userToBeUpdatedOrCreated,
+            Locale locale
+    ) {
+        Optional<UserEntity> userToBeUpdated = userRepository.findById(id);
+        if (userToBeUpdated.isPresent()) {
+
+        }
+        String newEmail = userToBeUpdatedOrCreated.getEmail();
+
+        Optional<UserEntity> userToBeUpdated = userRepository.findById(id);
+
+        if (isEmailAlreadyUse(newEmail)) {
+            throw new EmailAlreadyUseException(
+                    newEmail,
+                    locale,
+                    messageSource
+            );
+        }
+
+        return userRepository
+                .findById(id)
+                .map(
+                        user -> {
+                            mapper.putUserEntity(userToBeUpdatedOrCreated, user);
+
+                            UserEntity updatedUser = userRepository.save(user);
+
+                            return mapper.userEntityToResponseUserDto(updatedUser);
+                        }
+                ).orElse();
     }
 }
