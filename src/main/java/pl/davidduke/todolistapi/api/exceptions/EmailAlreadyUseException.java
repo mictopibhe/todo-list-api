@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.Locale;
 
 @ResponseStatus(HttpStatus.IM_USED)
-public class EmailIsAlreadyUseException extends RuntimeException {
-    public EmailIsAlreadyUseException(
+public class EmailAlreadyUseException extends RuntimeException {
+    public EmailAlreadyUseException(
             String email,
             Locale locale,
             MessageSource messageSource
