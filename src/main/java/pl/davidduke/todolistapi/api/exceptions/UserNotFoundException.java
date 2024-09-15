@@ -17,8 +17,22 @@ public class UserNotFoundException extends RuntimeException {
 
         super(
                 messageSource.getMessage(
-                        "error.user.notfound",
+                        "error.user.notfound.byId",
                         new Object[]{id},
+                        locale
+                )
+        );
+    }
+
+    public UserNotFoundException(
+            String userEmail,
+            Locale locale,
+            MessageSource messageSource
+    ) {
+        super(
+                messageSource.getMessage(
+                        "error.user.notfound.byEmail",
+                        new Object[] {userEmail},
                         locale
                 )
         );

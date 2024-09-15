@@ -1,8 +1,9 @@
 package pl.davidduke.todolistapi.api.util;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
+import pl.davidduke.todolistapi.api.dto.PostUserDto;
+import pl.davidduke.todolistapi.api.dto.ResponseUserDto;
 import pl.davidduke.todolistapi.storage.entities.UserEntity;
 
 @Mapper(
@@ -11,16 +12,5 @@ import pl.davidduke.todolistapi.storage.entities.UserEntity;
 )
 public interface UserMapper {
     ResponseUserDto userEntityToResponseUserDto(UserEntity user);
-
-    UserEntity userCreateDtoToUserEntity(UserCreateDto userCreateDto);
-
-    void patchUserEntity(
-            UserPatchDto userPatchDto,
-            @MappingTarget UserEntity user
-    );
-
-    void putUserEntity(
-            UserCreateDto userCreateDto,
-            @MappingTarget UserEntity user
-    );
+    UserEntity postUserDtoToUserEntity(PostUserDto userDto);
 }
