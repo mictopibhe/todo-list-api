@@ -13,7 +13,7 @@ import pl.davidduke.todolistapi.api.services.UserService;
 import java.util.Locale;
 
 @RestController
-@RequestMapping("api/v1/auth/")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AuthController {
@@ -22,8 +22,8 @@ public class AuthController {
     final UserService userService;
 
     @GetMapping
-    public String getUser() {
-        return "Hello";
+    public String hello() {
+        return "Hello World!";
     }
 
     @PostMapping(SIGN_UP)
