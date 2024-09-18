@@ -1,16 +1,18 @@
 package pl.davidduke.todolistapi.api.exceptions;
 
-import org.springframework.context.MessageSource;
-
-import java.util.Locale;
-
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.experimental.FieldDefaults;
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class PasswordNotMatchedException extends RuntimeException {
-    public PasswordNotMatchedException(Locale locale, MessageSource messageSource) {
-        super(
-            messageSource.getMessage(
-                    () -> new String[] {"error.password.notMatched"},
-                    locale
-            )
-        );
+    String message;
+
+    public PasswordNotMatchedException() {
+    }
+
+    public PasswordNotMatchedException(String message) {
+        super(message);
+        this.message = message;
     }
 }
