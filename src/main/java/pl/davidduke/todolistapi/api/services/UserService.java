@@ -3,6 +3,7 @@ package pl.davidduke.todolistapi.api.services;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.davidduke.todolistapi.api.dto.PostUserDto;
 import pl.davidduke.todolistapi.api.dto.ResponseUserDto;
 import pl.davidduke.todolistapi.api.exceptions.EmailAlreadyUseException;
-import pl.davidduke.todolistapi.api.exceptions.PasswordNotMatchedException;
 import pl.davidduke.todolistapi.api.util.UserMapper;
 import pl.davidduke.todolistapi.storage.repositories.UserRepository;
 
@@ -18,14 +18,20 @@ import java.util.Locale;
 
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserService {
 
     final UserRepository userRepository;
     final UserMapper mapper;
-    final MessageSource messageSource;
     final PasswordEncoder passwordEncoder;
+    final MessageSource messageSource;
+
+    public UserService(UserRepository userRepository, UserMapper mapper, PasswordEncoder passwordEncoder, MessageSource messageSource) {
+        this.userRepository = userRepository;
+        this.mapper = mapper;
+        this.passwordEncoder = passwordEncoder;
+        this.messageSource = messageSource;
+    }
 
 //    public UserListDto<ResponseUserDto> fetchAllUsers(
 //            Pageable pageable
@@ -66,34 +72,27 @@ public class UserService {
             PostUserDto userToBeCreated,
             Locale locale
     ) {
-        if (!userToBeCreated.getPassword()
-                .equals(userToBeCreated.getMatchingPassword())) {
-            throw new PasswordNotMatchedException(
-                    locale,
-                    messageSource
-            );
-        } else {
-            userToBeCreated.setPassword(
-                    passwordEncoder
-                            .encode(userToBeCreated.getPassword())
-
-            );
-        }
-
         String newEmail = userToBeCreated.getEmail();
         if (isEmailAlreadyUse(newEmail)) {
             throw new EmailAlreadyUseException(
-                    newEmail,
-                    locale,
-                    messageSource
+                    messageSource.getMessage(
+                            "error.email.already.use",
+                            new Object[]{newEmail},
+//                            "Default message if key is not found",
+                            locale
+                    )
             );
         }
-        return mapper
-                .userEntityToResponseUserDto(
-                        userRepository
-                                .save(
-                                        mapper.postUserDtoToUserEntity(userToBeCreated))
-                );
+
+        userToBeCreated.setPassword(
+                passwordEncoder.encode(userToBeCreated.getPassword())
+
+        );
+        return mapper.userEntityToResponseUserDto(
+                userRepository.save(
+                        mapper.postUserDtoToUserEntity(userToBeCreated)
+                )
+        );
     }
 
     private boolean isEmailAlreadyUse(

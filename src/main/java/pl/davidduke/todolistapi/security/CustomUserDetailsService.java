@@ -26,9 +26,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .findByEmail(username)
                 .orElseThrow(
                         () -> new UserNotFoundException(
-                                username,
-                                LocaleContextHolder.getLocale(),
-                                messageSource
+                                messageSource.getMessage(
+                                        "error.user.byEmail.notfound",
+                                        new Object[]{},
+                                        LocaleContextHolder.getLocale()
+                                )
                         )
                 );
         return new CustomUserDetails(user);
