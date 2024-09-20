@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.davidduke.todolistapi.api.dto.PostUserDto;
 import pl.davidduke.todolistapi.api.dto.ResponseUserDto;
@@ -16,6 +17,7 @@ import java.util.Locale;
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@PreAuthorize("permitAll()")
 public class AuthController {
     static final String SIGN_UP = "/signup";
 
@@ -27,7 +29,7 @@ public class AuthController {
     }
 
     @PostMapping(SIGN_UP)
-    public ResponseEntity<ResponseUserDto> signUp(
+    public ResponseEntity<?> signUp(
             @RequestBody PostUserDto postUserDto,
             Locale locale
     ) {

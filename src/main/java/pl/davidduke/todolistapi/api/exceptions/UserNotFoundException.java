@@ -1,40 +1,19 @@
 package pl.davidduke.todolistapi.api.exceptions;
 
-import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.experimental.FieldDefaults;
 
-import java.util.Locale;
-
-@ResponseStatus(HttpStatus.NOT_FOUND)
+@Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserNotFoundException extends RuntimeException {
+    String message;
 
-    public UserNotFoundException(
-            Long id,
-            Locale locale,
-            MessageSource messageSource
-    ) {
-
-        super(
-                messageSource.getMessage(
-                        "error.user.notfound.byId",
-                        new Object[]{id},
-                        locale
-                )
-        );
+    public UserNotFoundException() {
     }
 
-    public UserNotFoundException(
-            String userEmail,
-            Locale locale,
-            MessageSource messageSource
-    ) {
-        super(
-                messageSource.getMessage(
-                        "error.user.notfound.byEmail",
-                        new Object[] {userEmail},
-                        locale
-                )
-        );
+    public UserNotFoundException(String message) {
+        super(message);
+        this.message = message;
     }
 }
