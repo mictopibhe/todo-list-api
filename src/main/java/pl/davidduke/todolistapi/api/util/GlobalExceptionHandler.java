@@ -1,14 +1,11 @@
 package pl.davidduke.todolistapi.api.util;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import pl.davidduke.todolistapi.api.dto.errors.ApiErrorDto;
 import pl.davidduke.todolistapi.api.dto.errors.SubApiErrorDto;
 import pl.davidduke.todolistapi.api.exceptions.EmailAlreadyUseException;
@@ -29,6 +26,8 @@ public class GlobalExceptionHandler {
                 .body(
                         ApiErrorDto
                                 .builder()
+                                .timestamp(LocalDateTime.now())
+                                .status(HttpStatus.CONFLICT)
                                 .message(ex.getMessage())
                                 .build()
                 );
@@ -55,16 +54,24 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException e
     ) {
         List<SubApiErrorDto> subErrors = e.getBindingResult()
-                .getFieldErrors()
+                .getAllErrors()
                 .stream()
-                .map(
-                        error -> SubApiErrorDto
-                                .builder()
-                                .field(error.getField())
-                                .rejectedValue(error.getRejectedValue())
+                .map(error -> {
+                    if (error instanceof FieldError fieldError) {
+                        return SubApiErrorDto.builder()
+                                .field(fieldError.getField())
+                                .rejectedValue(fieldError.getRejectedValue())
+                                .message(fieldError.getDefaultMessage())
+                                .build();
+                    } else {
+                        return SubApiErrorDto.builder()
+                                .field("global")
+                                .rejectedValue(null)
                                 .message(error.getDefaultMessage())
-                                .build()
-                ).toList();
+                                .build();
+                    }
+                })
+                .toList();
 
         return ResponseEntity
                 .badRequest()

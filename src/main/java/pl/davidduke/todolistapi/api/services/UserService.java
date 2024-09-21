@@ -3,7 +3,6 @@ package pl.davidduke.todolistapi.api.services;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +17,7 @@ import java.util.Locale;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserService {
 
@@ -26,71 +26,30 @@ public class UserService {
     final PasswordEncoder passwordEncoder;
     final MessageSource messageSource;
 
-    public UserService(UserRepository userRepository, UserMapper mapper, PasswordEncoder passwordEncoder, MessageSource messageSource) {
-        this.userRepository = userRepository;
-        this.mapper = mapper;
-        this.passwordEncoder = passwordEncoder;
-        this.messageSource = messageSource;
-    }
-
-//    public UserListDto<ResponseUserDto> fetchAllUsers(
-//            Pageable pageable
-//    ) {
-//
-//        Page<ResponseUserDto> users = userRepository
-//                .findAll(pageable)
-//                .map(mapper::userEntityToResponseUserDto);
-//
-//        return UserListDto
-//                .<ResponseUserDto>builder()
-//                .content(users.getContent())
-//                .totalElements(users.getTotalElements())
-//                .totalPages(users.getTotalPages())
-//                .pageNumber(users.getNumber())
-//                .pageSize(users.getSize())
-//                .build();
-//    }
-
-//    public ResponseUserDto fetchUserById(
-//            Long id,
-//            Locale locale
-//    ) {
-//        return userRepository
-//                .findById(id)
-//                .map(mapper::userEntityToResponseUserDto)
-//                .orElseThrow(
-//                        () -> new UserNotFoundException(
-//                                id,
-//                                locale,
-//                                messageSource
-//                        )
-//                );
-//    }
-
     @Transactional
     public ResponseUserDto postUser(
-            PostUserDto userToBeCreated,
+            PostUserDto newUser,
             Locale locale
     ) {
-        String newEmail = userToBeCreated.getEmail();
+        String newEmail = newUser.getEmail();
+
         if (isEmailAlreadyUse(newEmail)) {
             throw new EmailAlreadyUseException(
                     messageSource.getMessage(
                             "error.email.already.use",
                             new Object[]{newEmail},
-//                            "Default message if key is not found",
                             locale
                     )
             );
         }
 
-        userToBeCreated.setPassword(
-                passwordEncoder.encode(userToBeCreated.getPassword())
-
+        newUser.setPassword(
+                passwordEncoder.encode(newUser.getPassword())
         );
+
         return mapper.userEntityToResponseUserDto(
                 userRepository.save(
-                        mapper.postUserDtoToUserEntity(userToBeCreated)
+                        mapper.postUserDtoToUserEntity(newUser)
                 )
         );
     }

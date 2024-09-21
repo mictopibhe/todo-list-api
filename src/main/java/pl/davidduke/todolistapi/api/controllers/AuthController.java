@@ -1,5 +1,6 @@
 package pl.davidduke.todolistapi.api.controllers;
 
+import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,7 +31,7 @@ public class AuthController {
 
     @PostMapping(SIGN_UP)
     public ResponseEntity<?> signUp(
-            @RequestBody PostUserDto postUserDto,
+            @RequestBody @Valid PostUserDto postUserDto,
             Locale locale
     ) {
         return ResponseEntity
