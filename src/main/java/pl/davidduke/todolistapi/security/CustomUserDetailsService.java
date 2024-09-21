@@ -1,8 +1,6 @@
 package pl.davidduke.todolistapi.security;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,11 +12,10 @@ import pl.davidduke.todolistapi.storage.repositories.UserRepository;
 
 @Service
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CustomUserDetailsService implements UserDetailsService {
 
-    final UserRepository userRepository;
-    final MessageSource messageSource;
+    private final UserRepository userRepository;
+    private final MessageSource messageSource;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UserNotFoundException {

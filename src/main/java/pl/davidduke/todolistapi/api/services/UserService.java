@@ -1,8 +1,6 @@
 package pl.davidduke.todolistapi.api.services;
 
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,13 +16,12 @@ import java.util.Locale;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserService {
 
-    final UserRepository userRepository;
-    final UserMapper mapper;
-    final PasswordEncoder passwordEncoder;
-    final MessageSource messageSource;
+    private final UserRepository userRepository;
+    private final UserMapper mapper;
+    private final PasswordEncoder passwordEncoder;
+    private final MessageSource messageSource;
 
     @Transactional
     public ResponseUserDto postUser(
