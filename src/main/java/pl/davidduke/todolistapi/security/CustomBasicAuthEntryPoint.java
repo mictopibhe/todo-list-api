@@ -3,9 +3,6 @@ package pl.davidduke.todolistapi.security;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.AuthenticationException;
@@ -16,10 +13,9 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import java.io.IOException;
 
 @Component
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class CustomBasicAuthEntryPoint implements AuthenticationEntryPoint {
 
-    final HandlerExceptionResolver resolver;
+    private final HandlerExceptionResolver resolver;
 
     @Autowired
     public CustomBasicAuthEntryPoint(
