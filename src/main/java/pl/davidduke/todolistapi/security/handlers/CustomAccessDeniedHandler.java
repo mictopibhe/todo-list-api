@@ -1,4 +1,4 @@
-package pl.davidduke.todolistapi.security;
+package pl.davidduke.todolistapi.security.handlers;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

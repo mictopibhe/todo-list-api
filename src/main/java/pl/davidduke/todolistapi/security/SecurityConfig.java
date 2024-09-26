@@ -13,6 +13,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import pl.davidduke.todolistapi.security.handlers.CustomAccessDeniedHandler;
+import pl.davidduke.todolistapi.security.handlers.CustomBasicAuthEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -21,7 +23,6 @@ public class SecurityConfig {
 
     private final CustomBasicAuthEntryPoint authEntryPoint;
     private final CustomAccessDeniedHandler accessDeniedHandler;
-    private final CustomAuthenticationFailureHandler authenticationFailureHandler;
 
     @Value("${api.endpoint.base-url}")
     private String baseUrl;
@@ -56,9 +57,9 @@ public class SecurityConfig {
                 .httpBasic(httpBasic -> httpBasic
                         .authenticationEntryPoint(authEntryPoint)
                 )
-                .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .accessDeniedHandler(accessDeniedHandler)
-                )
+//                .exceptionHandling(exceptionHandling -> exceptionHandling
+//                        .accessDeniedHandler(accessDeniedHandler)
+//                )
                 .build();
     }
 

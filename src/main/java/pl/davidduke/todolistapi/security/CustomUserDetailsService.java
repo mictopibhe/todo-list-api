@@ -24,8 +24,8 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(
                         () -> new UserNotFoundException(
                                 messageSource.getMessage(
-                                        "error.user.byEmail.notfound",
-                                        new Object[]{},
+                                        "error.user.notfoundByEmail",
+                                        new Object[]{username},
                                         LocaleContextHolder.getLocale()
                                 )
                         )
