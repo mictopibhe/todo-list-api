@@ -4,10 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.davidduke.todolistapi.api.dto.PostUserDto;
 import pl.davidduke.todolistapi.api.dto.ResponseUserDto;
 import pl.davidduke.todolistapi.api.services.UserService;
@@ -22,6 +19,11 @@ public class AuthController {
     private static final String SIGN_UP = "/signup";
 
     private final UserService userService;
+
+    @GetMapping
+    public String hello () {
+        return "Hello World!";
+    }
 
     @PostMapping(SIGN_UP)
     public ResponseEntity<ResponseUserDto> signUp(
