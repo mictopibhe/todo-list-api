@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -14,7 +13,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -22,6 +20,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig {
 
     private final CustomBasicAuthEntryPoint authEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final CustomAuthenticationFailureHandler authenticationFailureHandler;
 
     @Value("${api.endpoint.base-url}")
     private String baseUrl;
@@ -46,17 +46,19 @@ public class SecurityConfig {
                         .requestMatchers(this.baseUrl + "/user/task/**").hasAnyAuthority(
                                 "ROLE_ADMIN", "ROLE_USER"
                         )
-                        .requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
                         .anyRequest().authenticated()
                 )
-//                .headers(headers -> headers
-//                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // This is for H2 browser console access.
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-//                .httpBasic(Customizer.withDefaults())
-//                .exceptionHandling(handler -> handler.authenticationEntryPoint(authEntryPoint))
-                .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(this.authEntryPoint))
+                .headers(httpSecurityHeadersConfigurer -> httpSecurityHeadersConfigurer
+                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable)) // For h2-console
+                .httpBasic(httpBasic -> httpBasic
+                        .authenticationEntryPoint(authEntryPoint)
+                )
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .accessDeniedHandler(accessDeniedHandler)
+                )
                 .build();
     }
 
@@ -67,6 +69,7 @@ public class SecurityConfig {
 
     private String[] getOpenedResources() {
         return new String[]{
+                "/h2-console/**",
                 "/swagger-ui/**",
                 "/v3/api-docs/**",
                 this.baseUrl + "/auth/signup"
