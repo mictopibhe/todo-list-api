@@ -2,19 +2,21 @@ package pl.davidduke.todolistapi.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import pl.davidduke.todolistapi.storage.entities.UserEntity;
 
 import java.util.Collection;
 import java.util.List;
 
+
 @RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
-    private final transient UserEntity user;
+    private final UserEntity user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return List.of(new SimpleGrantedAuthority(user.getRole().name()));
     }
 
     @Override

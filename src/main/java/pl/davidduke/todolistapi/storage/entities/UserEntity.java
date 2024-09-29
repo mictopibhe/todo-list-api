@@ -3,6 +3,7 @@ package pl.davidduke.todolistapi.storage.entities;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import pl.davidduke.todolistapi.storage.enums.Role;
 
 import java.util.List;
 
@@ -35,6 +36,10 @@ public class UserEntity {
 
     @Column(nullable = false)
     String password;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    Role role;
 
     @OneToMany(
             mappedBy = "owner"

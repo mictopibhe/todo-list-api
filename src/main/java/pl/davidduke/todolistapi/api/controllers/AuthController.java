@@ -5,14 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.davidduke.todolistapi.api.dto.PostUserDto;
+import pl.davidduke.todolistapi.api.dto.UserCreateDto;
 import pl.davidduke.todolistapi.api.dto.ResponseUserDto;
 import pl.davidduke.todolistapi.api.services.UserService;
 
 import java.util.Locale;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("${api.endpoint.base-url}/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -20,18 +20,13 @@ public class AuthController {
 
     private final UserService userService;
 
-    @GetMapping
-    public String hello () {
-        return "Hello World!";
-    }
-
     @PostMapping(SIGN_UP)
     public ResponseEntity<ResponseUserDto> signUp(
-            @RequestBody @Valid PostUserDto postUserDto,
+            @RequestBody @Valid UserCreateDto userCreateDto,
             Locale locale
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(userService.postUser(postUserDto, locale));
+                .body(userService.register(userCreateDto, locale));
     }
 }

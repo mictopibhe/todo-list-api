@@ -2,14 +2,14 @@ package pl.davidduke.todolistapi.api.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import pl.davidduke.todolistapi.api.dto.PostUserDto;
+import pl.davidduke.todolistapi.api.dto.UserCreateDto;
 
-public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, PostUserDto> {
+public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, UserCreateDto> {
     @Override
     public boolean isValid(
-            PostUserDto postUserDto,
+            UserCreateDto userCreateDto,
             ConstraintValidatorContext constraintValidatorContext
     ) {
-        return postUserDto.getPassword().equals(postUserDto.getMatchingPassword());
+        return userCreateDto.getPassword().equals(userCreateDto.getConfirmPassword());
     }
 }
