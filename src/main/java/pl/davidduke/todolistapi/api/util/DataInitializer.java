@@ -4,13 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import pl.davidduke.todolistapi.api.dto.PostUserDto;
+import pl.davidduke.todolistapi.api.dto.UserCreateDto;
 import pl.davidduke.todolistapi.api.services.UserService;
 
 import java.util.Locale;
 
-@RequiredArgsConstructor
+
 @Component
+@RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
     private final UserService userService;
@@ -18,14 +19,15 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        PostUserDto admin = PostUserDto
+        UserCreateDto admin = UserCreateDto
                 .builder()
-                .email("admin@davidduke.com")
+                .email("admin@gmail.com")
                 .firstName("admin")
                 .lastName("davidduke")
-                .password("password")
-                .matchingPassword("password")
+                .password("12345678")
+                .confirmPassword("12345678")
                 .build();
-        userService.postUser(admin, Locale.ENGLISH);
+
+        userService.register(admin, Locale.ENGLISH);
     }
 }

@@ -9,7 +9,7 @@ import pl.davidduke.todolistapi.api.validation.PasswordMatches;
 @Data
 @Builder
 @PasswordMatches(message = "{error.passwords.dontmatch}")
-public class PostUserDto {
+public class UserCreateDto {
     @NotBlank(message = "{error.name.blank}")
     @Size(min = 2, max = 70, message = "{error.name.length}")
     private String firstName;
@@ -23,5 +23,5 @@ public class PostUserDto {
     @Size(min = 8, max = 70, message = "{error.password.length}")
     private String password;
 
-    private String matchingPassword;
+    private String confirmPassword;
 }
