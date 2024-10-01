@@ -22,8 +22,7 @@ public class AuthController {
 
     @PostMapping(SIGN_UP)
     public ResponseEntity<ResponseUserDto> signUp(
-            @RequestBody @Valid UserCreateDto userCreateDto,
-            Locale locale
+            @RequestBody @Valid UserCreateDto userCreateDto, Locale locale
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)

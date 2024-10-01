@@ -1,5 +1,6 @@
 package pl.davidduke.todolistapi.api.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
@@ -18,6 +19,7 @@ public class UserCreateDto {
     private String lastName;
     @NotBlank(message = "{error.email.blank}")
     @Size(min = 2, max = 70, message = "{error.email.length}")
+    @Email
     private String email;
     @NotBlank(message = "{error.password.blank}")
     @Size(min = 8, max = 70, message = "{error.password.length}")

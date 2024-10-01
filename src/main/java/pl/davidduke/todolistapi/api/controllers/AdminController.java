@@ -9,9 +9,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.davidduke.todolistapi.api.dto.ResponseUserDto;
 import pl.davidduke.todolistapi.api.dto.UserUpdateDto;
+import pl.davidduke.todolistapi.api.dto.UsersPageDto;
 import pl.davidduke.todolistapi.api.services.UserService;
 
-import java.util.List;
 import java.util.Locale;
 
 @RestController
@@ -26,7 +26,7 @@ public class AdminController {
     private final UserService userService;
 
     @GetMapping(FETCH_USERS)
-    public ResponseEntity<List<ResponseUserDto>> fetchUsers(
+    public ResponseEntity<UsersPageDto<ResponseUserDto>> fetchUsers(
             @ParameterObject Pageable pageable
     ) {
         return ResponseEntity.ok(
@@ -37,8 +37,7 @@ public class AdminController {
 
     @GetMapping(FETCH_UPDATE_DELETE_USER_BY_ID)
     public ResponseEntity<ResponseUserDto> fetchUserById(
-            @PathVariable long id,
-            Locale locale
+            @PathVariable long id, Locale locale
     ) {
         return ResponseEntity.ok(
                 userService
@@ -48,9 +47,8 @@ public class AdminController {
 
     @PatchMapping(FETCH_UPDATE_DELETE_USER_BY_ID)
     public ResponseEntity<ResponseUserDto> updateUserById(
-            @PathVariable long id,
-            @RequestBody @Valid UserUpdateDto userUpdateDto,
-            Locale locale
+            @PathVariable long id, Locale locale,
+            @RequestBody @Valid UserUpdateDto userUpdateDto
     ) {
         return ResponseEntity.ok(
                 userService
@@ -64,8 +62,7 @@ public class AdminController {
 
     @DeleteMapping(FETCH_UPDATE_DELETE_USER_BY_ID)
     public ResponseEntity<Void> deleteUserById(
-            @PathVariable long id,
-            Locale locale
+            @PathVariable long id, Locale locale
     ) {
         userService.deleteUserById(id, locale);
         return ResponseEntity.noContent().build();

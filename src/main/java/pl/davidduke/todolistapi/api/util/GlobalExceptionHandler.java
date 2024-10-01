@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.davidduke.todolistapi.api.dto.errors.ApiErrorDto;
 import pl.davidduke.todolistapi.api.dto.errors.SubApiErrorDto;
 import pl.davidduke.todolistapi.api.exceptions.EmailAlreadyUseException;
+import pl.davidduke.todolistapi.api.exceptions.PasswordNotCorrectException;
 import pl.davidduke.todolistapi.api.exceptions.UserNotFoundException;
 
 import java.time.LocalDateTime;
@@ -84,5 +85,19 @@ public class GlobalExceptionHandler {
                                 .errors(subErrors)
                                 .build()
                 );
+    }
+
+    @ExceptionHandler(PasswordNotCorrectException.class)
+    public ResponseEntity<ApiErrorDto> handlePasswordNotCorrectException(
+            PasswordNotCorrectException e
+    ) {
+        return ResponseEntity.badRequest().body(
+                ApiErrorDto
+                        .builder()
+                        .status(HttpStatus.BAD_REQUEST)
+                        .timestamp(LocalDateTime.now())
+                        .message(e.getMessage())
+                        .build()
+        );
     }
 }
