@@ -33,8 +33,7 @@ public class CustomBasicAuthEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(
-            HttpServletRequest request,
-            HttpServletResponse response,
+            HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException
     ) throws IOException, ServletException {
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());

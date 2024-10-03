@@ -1,4 +1,4 @@
-package pl.davidduke.todolistapi.api.dto;
+package pl.davidduke.todolistapi.api.dto.users;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

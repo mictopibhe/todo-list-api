@@ -2,7 +2,7 @@ package pl.davidduke.todolistapi.api.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import pl.davidduke.todolistapi.api.dto.UserCreateDto;
+import pl.davidduke.todolistapi.api.dto.users.UserCreateDto;
 
 public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches, UserCreateDto> {
     @Override

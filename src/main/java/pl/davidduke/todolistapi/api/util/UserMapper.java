@@ -1,14 +1,15 @@
 package pl.davidduke.todolistapi.api.util;
 
 import org.mapstruct.*;
-import pl.davidduke.todolistapi.api.dto.ResponseUserDto;
-import pl.davidduke.todolistapi.api.dto.UserCreateDto;
-import pl.davidduke.todolistapi.api.dto.UserUpdateDto;
+import pl.davidduke.todolistapi.api.dto.users.ResponseUserDto;
+import pl.davidduke.todolistapi.api.dto.users.UserCreateDto;
+import pl.davidduke.todolistapi.api.dto.users.UserUpdateDto;
 import pl.davidduke.todolistapi.storage.entities.UserEntity;
 
 @Mapper(
         componentModel = "spring",
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
+        uses = {TaskMapper.class}
 )
 public interface UserMapper {
     @BeanMapping(ignoreByDefault = true)

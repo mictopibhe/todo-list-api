@@ -1,5 +1,6 @@
 package pl.davidduke.todolistapi.storage.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -19,16 +20,10 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(
-            name = "first_name",
-            nullable = false
-    )
+    @Column(name = "first_name", nullable = false)
     String firstName;
 
-    @Column(
-            name = "last_name",
-            nullable = false
-    )
+    @Column(name = "last_name", nullable = false)
     String lastName;
 
     @Column(nullable = false)
@@ -41,8 +36,8 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     Role role;
 
-    @OneToMany(
-            mappedBy = "owner"
-    )
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    @JsonIgnore
     List<TaskEntity> tasks;
 }

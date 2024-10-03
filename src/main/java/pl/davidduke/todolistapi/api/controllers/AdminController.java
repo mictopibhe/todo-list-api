@@ -7,9 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.davidduke.todolistapi.api.dto.ResponseUserDto;
-import pl.davidduke.todolistapi.api.dto.UserUpdateDto;
-import pl.davidduke.todolistapi.api.dto.UsersPageDto;
+import pl.davidduke.todolistapi.api.dto.users.ResponseUserDto;
+import pl.davidduke.todolistapi.api.dto.users.UserUpdateDto;
+import pl.davidduke.todolistapi.api.dto.users.UsersPageDto;
 import pl.davidduke.todolistapi.api.services.UserService;
 
 import java.util.Locale;
@@ -52,9 +52,7 @@ public class AdminController {
     ) {
         return ResponseEntity.ok(
                 userService
-                        .updateUserById(
-                                id,
-                                userUpdateDto,
+                        .updateUserById(id, userUpdateDto,
                                 locale
                         )
         );
