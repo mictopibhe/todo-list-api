@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.davidduke.todolistapi.api.dto.UserCreateDto;
-import pl.davidduke.todolistapi.api.dto.ResponseUserDto;
+import pl.davidduke.todolistapi.api.dto.users.UserCreateDto;
+import pl.davidduke.todolistapi.api.dto.users.ResponseUserDto;
 import pl.davidduke.todolistapi.api.services.UserService;
 
 import java.util.Locale;

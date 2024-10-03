@@ -4,9 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.*;
@@ -22,14 +19,13 @@ import pl.davidduke.todolistapi.security.handlers.CustomBasicAuthEntryPoint;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private static final String ADMIN_ENDPOINT = "/users/**";
+    private static final String ADMIN_ENDPOINT = "/admin/users/**";
     private static final String USER_ENDPOINT = "/users/me/**";
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
     private static final String ROLE_USER = "ROLE_USER";
 
     private final CustomBasicAuthEntryPoint authEntryPoint;
-    private final CustomUserDetailsService userDetailsService;
-//    private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Value("${api.endpoint.base-url}")
     private String baseUrl;
@@ -44,6 +40,7 @@ public class SecurityConfig {
                 .sessionManagement(this::configureSessionManagement)
                 .headers(this::configureHeaders)
                 .httpBasic(this::configureHttpBasic)
+                .exceptionHandling(this::configureExceptionHandler)
                 .build();
     }
 
@@ -52,27 +49,8 @@ public class SecurityConfig {
     ) {
         http
                 .requestMatchers(getOpenedResources()).permitAll()
-                .requestMatchers(HttpMethod.GET, this.baseUrl + USER_ENDPOINT).hasAnyAuthority(
-                        ROLE_ADMIN, ROLE_USER
-                )
-                .requestMatchers(HttpMethod.GET, this.baseUrl + ADMIN_ENDPOINT).hasAnyAuthority(
-                        ROLE_ADMIN
-                )
-                .requestMatchers(HttpMethod.PATCH, this.baseUrl + USER_ENDPOINT).hasAnyAuthority(
-                        ROLE_ADMIN, ROLE_USER
-                )
-                .requestMatchers(HttpMethod.PATCH, this.baseUrl + ADMIN_ENDPOINT).hasAnyAuthority(
-                        ROLE_ADMIN
-                )
-                .requestMatchers(HttpMethod.DELETE, this.baseUrl + USER_ENDPOINT).hasAnyAuthority(
-                        ROLE_ADMIN, ROLE_USER
-                )
-                .requestMatchers(HttpMethod.DELETE, this.baseUrl + ADMIN_ENDPOINT).hasAnyAuthority(
-                        ROLE_ADMIN
-                )
-                .requestMatchers(this.baseUrl + USER_ENDPOINT).hasAnyAuthority(
-                        ROLE_ADMIN, ROLE_USER
-                )
+                .requestMatchers(this.baseUrl + ADMIN_ENDPOINT).hasAnyAuthority(ROLE_ADMIN)
+                .requestMatchers(this.baseUrl + USER_ENDPOINT).hasAnyAuthority(ROLE_ADMIN, ROLE_USER)
                 .anyRequest().authenticated();
     }
 
@@ -104,6 +82,13 @@ public class SecurityConfig {
     ) {
         httpBasic
                 .authenticationEntryPoint(authEntryPoint);
+    }
+
+    private void configureExceptionHandler(
+            ExceptionHandlingConfigurer<HttpSecurity> exceptionHandling
+    ) {
+        exceptionHandling
+                .accessDeniedHandler(accessDeniedHandler);
     }
 
     @Bean

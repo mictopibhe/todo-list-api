@@ -1,7 +1,8 @@
-package pl.davidduke.todolistapi.api.dto;
+package pl.davidduke.todolistapi.api.dto.users;
 
 import lombok.Builder;
 import lombok.Data;
+import pl.davidduke.todolistapi.api.dto.tasks.TaskDto;
 import pl.davidduke.todolistapi.storage.entities.TaskEntity;
 import pl.davidduke.todolistapi.storage.enums.Role;
 
@@ -15,5 +16,5 @@ public class ResponseUserDto {
     private String lastName;
     private String email;
     private Role role;
-    private List<TaskEntity> tasks;
+    private List<TaskDto> tasks;
 }

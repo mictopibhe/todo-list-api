@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import pl.davidduke.todolistapi.api.dto.PasswordDto;
-import pl.davidduke.todolistapi.api.dto.ResponseUserDto;
-import pl.davidduke.todolistapi.api.dto.UserUpdateDto;
+import pl.davidduke.todolistapi.api.dto.users.PasswordDto;
+import pl.davidduke.todolistapi.api.dto.users.ResponseUserDto;
+import pl.davidduke.todolistapi.api.dto.users.UserUpdateDto;
 import pl.davidduke.todolistapi.api.services.UserService;
 
 import java.security.Principal;
@@ -43,9 +43,7 @@ public class UserController {
         return ResponseEntity.ok(
                 userService
                         .updateUserByEmail(
-                                principal.getName(),
-                                userUpdateDto,
-                                locale
+                                principal.getName(), userUpdateDto, locale
                         )
         );
     }
@@ -57,9 +55,7 @@ public class UserController {
     ) {
         return ResponseEntity.ok().body(
                 userService.updatePassword(
-                        principal.getName(),
-                        passwordDto,
-                        locale
+                        principal.getName(), passwordDto, locale
                 )
         );
     }

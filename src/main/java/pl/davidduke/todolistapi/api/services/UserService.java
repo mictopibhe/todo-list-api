@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.davidduke.todolistapi.api.dto.*;
+import pl.davidduke.todolistapi.api.dto.users.*;
 import pl.davidduke.todolistapi.api.exceptions.EmailAlreadyUseException;
 import pl.davidduke.todolistapi.api.exceptions.PasswordNotCorrectException;
 import pl.davidduke.todolistapi.api.exceptions.UserNotFoundException;
@@ -131,7 +131,7 @@ public class UserService {
                 .isPresent();
     }
 
-    private UserEntity findUserByEmail(
+    protected UserEntity findUserByEmail(
             String email, Locale locale
     ) {
         return userRepository.findByEmail(email).orElseThrow(
