@@ -21,6 +21,7 @@ public class SecurityConfig {
 
     private static final String ADMIN_ENDPOINT = "/admin/users/**";
     private static final String USER_ENDPOINT = "/users/me/**";
+    private static final String TASKS_ENDPOINT = "/tasks/**";
     private static final String ROLE_ADMIN = "ROLE_ADMIN";
     private static final String ROLE_USER = "ROLE_USER";
 
@@ -51,6 +52,7 @@ public class SecurityConfig {
                 .requestMatchers(getOpenedResources()).permitAll()
                 .requestMatchers(this.baseUrl + ADMIN_ENDPOINT).hasAnyAuthority(ROLE_ADMIN)
                 .requestMatchers(this.baseUrl + USER_ENDPOINT).hasAnyAuthority(ROLE_ADMIN, ROLE_USER)
+                .requestMatchers(this.baseUrl + TASKS_ENDPOINT).hasAnyAuthority(ROLE_ADMIN, ROLE_USER)
                 .anyRequest().authenticated();
     }
 

@@ -16,5 +16,5 @@ public interface TaskRepository extends JpaRepository<TaskEntity, Long> {
             String ownerEmail, Pageable pageable
     );
 
-    Optional<TaskEntity> findByOwner_EmailAndId(UserEntity owner, Long id);
+    Optional<TaskEntity> findByOwner_EmailAndId(String owner, Long id);
 }

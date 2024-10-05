@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import pl.davidduke.todolistapi.api.dto.tasks.TaskCreateDto;
 import pl.davidduke.todolistapi.api.dto.tasks.TaskDto;
 import pl.davidduke.todolistapi.api.dto.tasks.TasksPageDto;
+import pl.davidduke.todolistapi.api.exceptions.TaskByUserNotFoundException;
 import pl.davidduke.todolistapi.api.util.TaskMapper;
 import pl.davidduke.todolistapi.storage.entities.TaskEntity;
 import pl.davidduke.todolistapi.storage.entities.UserEntity;
@@ -60,5 +61,20 @@ public class TaskService {
         task.setStatus(TaskStatus.PLANNED);
         task.setOwner(user);
         return taskMapper.entityToTaskDto(taskRepository.save(task));
+    }
+
+    public TaskDto fetchTaskByOwnerAndId(
+            String name, Long id, Locale locale
+    ) {
+        return taskMapper
+                .entityToTaskDto(taskRepository.findByOwner_EmailAndId(name, id)
+                        .orElseThrow(() -> new TaskByUserNotFoundException(
+                                messageSource.getMessage(
+                                        "error.taskByUser.notFound",
+                                        new Object[]{name, id},
+                                        locale
+                                )
+                        ))
+                );
     }
 }
