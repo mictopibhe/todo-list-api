@@ -61,26 +61,26 @@ public class TaskController {
         );
     }
 
-    @PatchMapping(GET_OR_UPDATE_OR_DELETE)
-    public ResponseEntity<TaskDto> updateTaskByOwnerAndId(
-            @RequestBody @Valid TaskUpdateDto taskUpdateDto,
-            Principal principal,
-            Locale locale) {
-        return ResponseEntity.ok(
-                taskService.updateTaskByOwnerAndId(
-                        principal.getName(), taskUpdateDto, locale
-                )
-        );
-    }
+//    @PatchMapping(GET_OR_UPDATE_OR_DELETE)
+//    public ResponseEntity<TaskDto> updateTaskByOwnerAndId(
+//            @RequestBody @Valid TaskUpdateDto taskUpdateDto,
+//            @PathVariable long id, Principal principal,
+//            Locale locale) {
+//        return ResponseEntity.ok(
+//                taskService.updateTaskByOwnerAndId(
+//                        principal.getName(), id, taskUpdateDto, locale
+//                )
+//        );
+//    }
 
-    @DeleteMapping(GET_OR_UPDATE_OR_DELETE)
-    public ResponseEntity<Void> deleteTaskByOwnerAndId(
-            @PathVariable Long id, Principal principal,
-            Locale locale
-    ) {
-        taskService.deleteTaskByOwnerAndId(
-                principal.getName(), id, locale
-        );
-        return ResponseEntity.noContent().build();
-    }
+//    @DeleteMapping(GET_OR_UPDATE_OR_DELETE)
+//    public ResponseEntity<Void> deleteTaskByOwnerAndId(
+//            @PathVariable Long id, Principal principal,
+//            Locale locale
+//    ) {
+//        taskService.deleteTaskByOwnerAndId(
+//                principal.getName(), id, locale
+//        );
+//        return ResponseEntity.noContent().build();
+//    }
 }

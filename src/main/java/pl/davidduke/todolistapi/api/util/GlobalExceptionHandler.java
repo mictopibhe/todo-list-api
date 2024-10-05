@@ -100,4 +100,6 @@ public class GlobalExceptionHandler {
                         .build()
         );
     }
+
+    //todo: add exception handler for TaskByUserNotFound
 }
