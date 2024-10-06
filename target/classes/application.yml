@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: todo-list-api
+  messages:
+    basename: messages
+  web:
+    locale: en
+  datasource:
+    url: jdbc:h2:mem:mydb
+    username: sa
+    password: password
+    driver-class-name: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+  jackson:
+    date-format: yyyy-MM-dd'T'HH:mm:ss
+    time-zone: UTC
+api:
+  endpoint:
+    base-url: /api/v1
