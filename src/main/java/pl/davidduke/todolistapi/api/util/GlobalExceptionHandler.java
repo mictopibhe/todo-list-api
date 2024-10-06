@@ -8,53 +8,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.davidduke.todolistapi.api.dto.errors.ApiErrorDto;
 import pl.davidduke.todolistapi.api.dto.errors.SubApiErrorDto;
-import pl.davidduke.todolistapi.api.exceptions.EmailAlreadyUseException;
-import pl.davidduke.todolistapi.api.exceptions.PasswordNotCorrectException;
-import pl.davidduke.todolistapi.api.exceptions.UserNotFoundException;
+import pl.davidduke.todolistapi.api.exceptions.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(EmailAlreadyUseException.class)
-    public ResponseEntity<ApiErrorDto> handleEmailAlreadyUseException(
-            EmailAlreadyUseException ex
-    ) {
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(
-                        ApiErrorDto
-                                .builder()
-                                .timestamp(LocalDateTime.now())
-                                .status(HttpStatus.CONFLICT)
-                                .message(ex.getMessage())
-                                .build()
-                );
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiErrorDto> userNotFoundException(
-            UserNotFoundException e
-    ) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(
-                        ApiErrorDto
-                                .builder()
-                                .timestamp(LocalDateTime.now())
-                                .status(HttpStatus.NOT_FOUND)
-                                .message(e.getMessage())
-                                .build()
-                );
-    }
-
     @ExceptionHandler
     public ResponseEntity<ApiErrorDto> handleValidationException(
-            MethodArgumentNotValidException e
+            MethodArgumentNotValidException ex
     ) {
-        List<SubApiErrorDto> subErrors = e.getBindingResult()
+        List<SubApiErrorDto> subErrors = ex.getBindingResult()
                 .getAllErrors()
                 .stream()
                 .map(error -> {
@@ -74,32 +41,78 @@ public class GlobalExceptionHandler {
                 })
                 .toList();
 
+
         return ResponseEntity
                 .badRequest()
-                .body(
-                        ApiErrorDto
-                                .builder()
-                                .timestamp(LocalDateTime.now())
-                                .status(HttpStatus.BAD_REQUEST)
-                                .message("Validation failed")
-                                .errors(subErrors)
-                                .build()
-                );
+                .body(getApiErrorDto(
+                        HttpStatus.BAD_REQUEST, "Validation failed", subErrors
+                ));
+    }
+
+    @ExceptionHandler(EmailAlreadyUseException.class)
+    public ResponseEntity<ApiErrorDto> handleEmailAlreadyUseException(
+            EmailAlreadyUseException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(getApiErrorDto(
+                        HttpStatus.CONFLICT, ex.getMessage(), Collections.emptyList()
+                ));
+    }
+
+    @ExceptionHandler(InvalidTaskStatusException.class)
+    public ResponseEntity<ApiErrorDto> handleInvalidTaskStatusException(
+            InvalidTaskStatusException ex
+    ) {
+        return ResponseEntity
+                .badRequest()
+                .body(getApiErrorDto(
+                        HttpStatus.BAD_REQUEST, ex.getMessage(), Collections.emptyList()
+                ));
     }
 
     @ExceptionHandler(PasswordNotCorrectException.class)
     public ResponseEntity<ApiErrorDto> handlePasswordNotCorrectException(
-            PasswordNotCorrectException e
+            PasswordNotCorrectException ex
     ) {
-        return ResponseEntity.badRequest().body(
-                ApiErrorDto
-                        .builder()
-                        .status(HttpStatus.BAD_REQUEST)
-                        .timestamp(LocalDateTime.now())
-                        .message(e.getMessage())
-                        .build()
-        );
+        return ResponseEntity
+                .badRequest()
+                .body(getApiErrorDto(
+                        HttpStatus.BAD_REQUEST, ex.getMessage(), Collections.emptyList()
+                ));
     }
 
-    //todo: add exception handler for TaskByUserNotFound
+    @ExceptionHandler(TaskByUserNotFoundException.class)
+    public ResponseEntity<ApiErrorDto> handleTaskByUserNotFoundException(
+            TaskByUserNotFoundException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(getApiErrorDto(
+                        HttpStatus.NOT_FOUND, ex.getMessage(), Collections.emptyList()
+                ));
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ApiErrorDto> userNotFoundException(
+            UserNotFoundException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(getApiErrorDto(
+                        HttpStatus.NOT_FOUND, ex.getMessage(), Collections.emptyList()
+                ));
+    }
+
+    private ApiErrorDto getApiErrorDto(
+            HttpStatus status, String message, List<SubApiErrorDto> subErrors
+    ) {
+        return ApiErrorDto
+                .builder()
+                .timestamp(LocalDateTime.now())
+                .status(status)
+                .message(message)
+                .errors(subErrors)
+                .build();
+    }
 }
