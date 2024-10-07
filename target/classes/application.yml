@@ -24,5 +24,6 @@ spring:
     date-format: yyyy-MM-dd'T'HH:mm:ss
     time-zone: UTC
 api:
+  version: 0.0.1
   endpoint:
     base-url: /api/v1
