@@ -72,14 +72,14 @@ public class TaskService {
 
     @Transactional
     public TaskDto updateTaskByOwnerAndId(
-            String name, long id, TaskUpdateDto taskUpdateDto, Locale locale) {
+            String name, long id, TaskUpdateDto taskUpdateDto, Locale locale
+    ) {
         TaskEntity taskToBeUpdated = fetchTaskByOwnerAndIdOrThrowException(
                 name, id, locale
         );
         TaskStatus newStatus = taskUpdateDto.getStatus();
         if (isPossibleChangeStatus(newStatus, taskToBeUpdated.getStatus())) {
-            if (newStatus.equals(TaskStatus.DONE) &&
-                    !taskToBeUpdated.getStatus().equals(TaskStatus.DONE)) {
+            if (isTaskFinished(newStatus, taskToBeUpdated.getStatus())) {
                 taskToBeUpdated.setFinishedAt(LocalDateTime.now());
             }
             taskToBeUpdated.setStatus(newStatus);
@@ -94,6 +94,11 @@ public class TaskService {
         }
         taskMapper.updatePartial(taskUpdateDto, taskToBeUpdated);
         return taskMapper.entityToTaskDto(taskToBeUpdated);
+    }
+
+    private boolean isTaskFinished(TaskStatus newStatus, TaskStatus oldStatus) {
+        return (newStatus.equals(TaskStatus.DONE) && !oldStatus.equals(TaskStatus.DONE)) ||
+                (newStatus.equals(TaskStatus.CANCELED) && !oldStatus.equals(TaskStatus.CANCELED));
     }
 
     private boolean isPossibleChangeStatus(TaskStatus newStatus, TaskStatus status) {
