@@ -12,6 +12,7 @@ import java.util.List;
 @Table(name = "_user")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)

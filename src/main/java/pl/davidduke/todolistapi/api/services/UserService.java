@@ -42,11 +42,7 @@ public class UserService {
 
         UserEntity newUser = userMapper.toEntity(userCreateDto);
 
-        newUser.setRole(
-                newUser.getEmail().equals("admin@gmail.com") ?
-                        Role.ROLE_ADMIN :
-                        Role.ROLE_USER
-        ); // set role admin for my user
+        newUser.setRole(Role.ROLE_USER);
 
         return userMapper.entityToResponseUserDto(userRepository.save(newUser));
     }
