@@ -2,6 +2,7 @@ package pl.davidduke.todolistapi.api.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,28 +25,20 @@ import java.security.Principal;
 import java.util.Locale;
 
 @RestController
-@RequestMapping("${api.endpoint.base-url}")
+@RequestMapping("${api.endpoint.base-url}/tasks")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
 @SecurityRequirement(name = "httpBasic")
 public class TaskController {
 
-    private static final String FETCH_OR_CREATE = "/tasks";
-    private static final String GET_OR_UPDATE_OR_DELETE = "/tasks/{id}";
+    private static final String ID = "/{id}";
 
     private final TaskService taskService;
 
     @Operation(
             summary = "Fetch a paginated list of tasks for the authenticated user",
             description = "Returns a paginated list of tasks associated with the authenticated user",
-            tags = {"Task Operations"},
-            parameters = {
-                    @Parameter(
-                            name = "Accept-Language",
-                            description = "Locale for the response content",
-                            schema = @Schema(type = "string", example = "uk")
-                    )
-            }
+            tags = {"Task Operations"}
     )
     @ApiResponse(
             responseCode = "200",
@@ -77,7 +70,7 @@ public class TaskController {
                     )
             }
     )
-    @GetMapping(FETCH_OR_CREATE)
+    @GetMapping()
     public ResponseEntity<TasksPageDto<TaskDto>> fetchAllTasks(
             @ParameterObject Pageable pageable, Principal principal
     ) {
@@ -91,21 +84,7 @@ public class TaskController {
     @Operation(
             summary = "Fetch a task with specified id for the authenticated user",
             description = "Returns a specific task associated with the authenticated user",
-            tags = {"Task Operations"},
-            parameters = {
-                    // todo: delete id
-                    @Parameter(
-                            name = "id",
-                            description = "ID of the task to be fetched",
-                            required = true,
-                            schema = @Schema(type = "long")
-                    ),
-                    @Parameter(
-                            name = "Accept-Language",
-                            description = "Locale for the response content",
-                            schema = @Schema(type = "string", example = "uk")
-                    )
-            }
+            tags = {"Task Operations"}
     )
     @ApiResponse(
             responseCode = "200",
@@ -147,10 +126,11 @@ public class TaskController {
                     )
             }
     )
-    @GetMapping(GET_OR_UPDATE_OR_DELETE)
+    @GetMapping(ID)
     public ResponseEntity<TaskDto> fetchTaskByOwnerAndId(
-            @PathVariable Long id, Principal principal,
-            Locale locale
+            @Parameter(description = "Task ID", example = "1") @PathVariable Long id, Principal principal,
+            @Parameter(description = "Locale for the response content (supported: 'uk', 'en', 'pl')",
+                    name = "Accept-Language", in = ParameterIn.HEADER) Locale locale
     ) {
         return ResponseEntity.ok(
                 taskService.fetchTaskByOwnerAndId(
@@ -163,13 +143,6 @@ public class TaskController {
             summary = "Create a new task for the authenticated user",
             description = "Allows the authenticated user to create a new task.",
             tags = {"Task Operations"},
-            parameters = {
-                    @Parameter(
-                            name = "Accept-Language",
-                            description = "Locale for the response content",
-                            schema = @Schema(type = "string", example = "uk")
-                    )
-            },
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Task creation data",
                     required = true,
@@ -219,10 +192,12 @@ public class TaskController {
                     )
             }
     )
-    @PostMapping(FETCH_OR_CREATE)
+    @PostMapping(ID)
     public ResponseEntity<TaskDto> createTask(
             @RequestBody @Valid TaskCreateDto taskDto,
-            Principal principal, Locale locale
+            Principal principal,
+            @Parameter(description = "Locale for the response content (supported: 'uk', 'en', 'pl')",
+                    name = "Accept-Language", in = ParameterIn.HEADER) Locale locale
     ) {
         return ResponseEntity.ok(
                 taskService.createTask(
@@ -235,19 +210,6 @@ public class TaskController {
             summary = "Update a task by ID for the authenticated user",
             description = "Allows the authenticated user to update a specific task by its ID.",
             tags = {"Task Operations"},
-            parameters = {
-                    @Parameter(
-                            name = "id",
-                            description = "ID of the task to be updated",
-                            required = true,
-                            schema = @Schema(type = "long")
-                    ),
-                    @Parameter(
-                            name = "Accept-Language",
-                            description = "Locale for the response content",
-                            schema = @Schema(type = "string", example = "uk")
-                    )
-            },
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Task update data",
                     required = true,
@@ -307,11 +269,14 @@ public class TaskController {
                     )
             }
     )
-    @PatchMapping(GET_OR_UPDATE_OR_DELETE)
+    @PatchMapping(ID)
     public ResponseEntity<TaskDto> updateTaskByOwnerAndId(
             @RequestBody @Valid TaskUpdateDto taskUpdateDto,
-            @PathVariable long id, Principal principal,
-            Locale locale) {
+            @Parameter(description = "Task ID", example = "1")@PathVariable long id,
+            Principal principal,
+            @Parameter(description = "Locale for the response content (supported: 'uk', 'en', 'pl')",
+                    name = "Accept-Language", in = ParameterIn.HEADER) Locale locale
+    ) {
         return ResponseEntity.ok(
                 taskService.updateTaskByOwnerAndId(
                         principal.getName(), id, taskUpdateDto, locale
@@ -322,20 +287,7 @@ public class TaskController {
     @Operation(
             summary = "Delete a task by ID for the authenticated user",
             description = "Allows the authenticated user to delete a specific task by its ID.",
-            tags = {"Task Operations"},
-            parameters = {
-                    @Parameter(
-                            name = "id",
-                            description = "ID of the task to be deleted",
-                            required = true,
-                            schema = @Schema(type = "long")
-                    ),
-                    @Parameter(
-                            name = "Accept-Language",
-                            description = "Locale for the response content",
-                            schema = @Schema(type = "string", example = "uk")
-                    )
-            }
+            tags = {"Task Operations"}
     )
     @ApiResponse(
             responseCode = "204",
@@ -371,10 +323,11 @@ public class TaskController {
                     )
             }
     )
-    @DeleteMapping(GET_OR_UPDATE_OR_DELETE)
+    @DeleteMapping(ID)
     public ResponseEntity<Void> deleteTaskByOwnerAndId(
-            @PathVariable Long id, Principal principal,
-            Locale locale
+            @Parameter(description = "Task ID", example = "1") @PathVariable Long id, Principal principal,
+            @Parameter(description = "Locale for the response content (supported: 'uk', 'en', 'pl')",
+                    name = "Accept-Language", in = ParameterIn.HEADER) Locale locale
     ) {
         taskService.deleteTaskByOwnerAndId(
                 principal.getName(), id, locale
