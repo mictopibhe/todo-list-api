@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -78,7 +79,7 @@ public class TaskController {
     )
     @GetMapping(FETCH_OR_CREATE)
     public ResponseEntity<TasksPageDto<TaskDto>> fetchAllTasks(
-            Pageable pageable, Principal principal
+            @ParameterObject Pageable pageable, Principal principal
     ) {
         return ResponseEntity.ok(
                 taskService.fetchTasks(
@@ -92,6 +93,7 @@ public class TaskController {
             description = "Returns a specific task associated with the authenticated user",
             tags = {"Task Operations"},
             parameters = {
+                    // todo: delete id
                     @Parameter(
                             name = "id",
                             description = "ID of the task to be fetched",
