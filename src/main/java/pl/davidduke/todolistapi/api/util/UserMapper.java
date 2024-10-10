@@ -5,6 +5,7 @@ import pl.davidduke.todolistapi.api.dto.users.ResponseUserDto;
 import pl.davidduke.todolistapi.api.dto.users.UserCreateDto;
 import pl.davidduke.todolistapi.api.dto.users.UserUpdateDto;
 import pl.davidduke.todolistapi.storage.entities.UserEntity;
+import pl.davidduke.todolistapi.storage.enums.Role;
 
 @Mapper(
         componentModel = "spring",
@@ -24,6 +25,7 @@ public interface UserMapper {
 
     //    @Mapping(target = "email",  expression = "java(toLowerCase(userDto.getEmail()))")
     @Mapping(target = "email", source = "email", qualifiedByName = "toLowerCase")
+    @Mapping(target = "role", expression = "java(getDefaultRole())")
     UserEntity toEntity(UserCreateDto userDto);
 
     //    @Mapping(target = "email", expression = "java(toLowerCase(userUpdateDto.getEmail()))")
@@ -33,5 +35,8 @@ public interface UserMapper {
     @Named("toLowerCase")
     default String toLowerCase(String email) {
         return email != null ? email.toLowerCase() : null;
+    }
+    default Role getDefaultRole() {
+        return Role.ROLE_USER;
     }
 }
