@@ -2,6 +2,7 @@ package pl.davidduke.todolistapi.api.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,24 +22,16 @@ import pl.davidduke.todolistapi.api.services.UserService;
 import java.util.Locale;
 
 @RestController
-@RequestMapping("${api.endpoint.base-url}/auth")
+@RequestMapping("${api.endpoint.base-url}/auth/signup")
 @RequiredArgsConstructor
 public class AuthController {
-
-    private static final String SIGN_UP = "/signup";
 
     private final UserService userService;
 
     @Operation(
             summary = "Registration of the user in the service.",
             description = "Registration a new user in the service and adding him to the database.",
-            parameters = {
-                    @Parameter(
-                            name = "Accept-Language",
-                            description = "Locale for the response content (supported: 'uk', 'en', 'pl')",
-                            schema = @Schema(type = "string", example = "uk")
-                    )
-            },
+            tags = {"Registration"},
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "User creation data",
                     required = true,
@@ -68,9 +61,11 @@ public class AuthController {
                     )
             }
     )
-    @PostMapping(SIGN_UP)
+    @PostMapping()
     public ResponseEntity<ResponseUserDto> signUp(
-            @RequestBody @Valid UserCreateDto userCreateDto, Locale locale
+            @RequestBody @Valid UserCreateDto userCreateDto,
+            @Parameter(description = "Locale for the response content (supported: 'uk', 'en', 'pl')",
+                    name = "Accept-Language", in = ParameterIn.HEADER) Locale locale
     ) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)

@@ -2,6 +2,7 @@ package pl.davidduke.todolistapi.api.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -22,28 +23,20 @@ import pl.davidduke.todolistapi.api.services.UserService;
 import java.util.Locale;
 
 @RestController
-@RequestMapping("${api.endpoint.base-url}")
+@RequestMapping("${api.endpoint.base-url}/admin/users")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyAuthority('ROLE_ADMIN')")
 @SecurityRequirement(name = "httpBasic")
 public class AdminController {
 
-    private static final String FETCH_USERS = "/admin/users";
-    private static final String FETCH_UPDATE_DELETE_USER_BY_ID = "/admin/users/{id}";
+    private static final String ID = "/{id}";
 
     private final UserService userService;
 
     @Operation(
             summary = "Fetch a paginated list of users (Admin only)",
             description = "Allows administrators to fetch a paginated list of all users",
-            tags = {"Admin operations"},
-            parameters = {
-                    @Parameter(
-                            name = "Accept-Language",
-                            description = "Locale for the response content",
-                            schema = @Schema(type = "string", example = "uk")
-                    )
-            }
+            tags = {"Admin Operations"}
     )
     @ApiResponse(
             responseCode = "200",
@@ -75,7 +68,7 @@ public class AdminController {
                     )
             }
     )
-    @GetMapping(FETCH_USERS)
+    @GetMapping()
     public ResponseEntity<UsersPageDto<ResponseUserDto>> fetchUsers(
             @ParameterObject Pageable pageable
     ) {
@@ -88,20 +81,7 @@ public class AdminController {
     @Operation(
             summary = "Fetch information about the user by specified ID (Admin only)",
             description = "Allows administrators to fetch information about the user by its ID",
-            tags = {"Admin Operations"},
-            parameters = {
-                    @Parameter(
-                            name = "id",
-                            description = "ID of the user to be deleted",
-                            required = true,
-                            schema = @Schema(type = "long")
-                    ),
-                    @Parameter(
-                            name = "Accept-Language",
-                            description = "Locale for the response content (supported: 'uk', 'en', 'pl')",
-                            schema = @Schema(type = "string", example = "uk")
-                    )
-            }
+            tags = {"Admin Operations"}
     )
     @ApiResponse(
             responseCode = "200",
@@ -143,9 +123,11 @@ public class AdminController {
                     )
             }
     )
-    @GetMapping(FETCH_UPDATE_DELETE_USER_BY_ID)
+    @GetMapping(ID)
     public ResponseEntity<ResponseUserDto> fetchUserById(
-            @PathVariable long id, Locale locale
+            @Parameter(description = "User ID", example = "1") @PathVariable long id,
+            @Parameter(description = "Locale for the response content (supported: 'uk', 'en', 'pl')",
+            name = "Accept-Language", in = ParameterIn.HEADER) Locale locale
     ) {
         return ResponseEntity.ok(
                 userService
@@ -156,20 +138,7 @@ public class AdminController {
     @Operation(
             summary = "Update user's information by specified ID (Admin only)",
             description = "Allows administrators to update user's information by its ID",
-            tags = {"Admin Operations"},
-            parameters = {
-                    @Parameter(
-                            name = "id",
-                            description = "ID of the user to be deleted",
-                            required = true,
-                            schema = @Schema(type = "long")
-                    ),
-                    @Parameter(
-                            name = "Accept-Language",
-                            description = "Locale for the response content (supported: 'uk', 'en', 'pl')",
-                            schema = @Schema(type = "string", example = "uk")
-                    )
-            }
+            tags = {"Admin Operations"}
     )
     @ApiResponse(
             responseCode = "200",
@@ -221,10 +190,12 @@ public class AdminController {
                     )
             }
     )
-    @PatchMapping(FETCH_UPDATE_DELETE_USER_BY_ID)
+    @PatchMapping(ID)
     public ResponseEntity<ResponseUserDto> updateUserById(
-            @PathVariable long id, Locale locale,
-            @RequestBody @Valid UserUpdateDto userUpdateDto
+            @Parameter(description = "User ID", example = "1") @PathVariable long id,
+            @RequestBody @Valid UserUpdateDto userUpdateDto,
+            @Parameter(description = "Locale for the response content (supported: 'uk', 'en', 'pl')",
+                    name = "Accept-Language", in = ParameterIn.HEADER) Locale locale
     ) {
         return ResponseEntity.ok(
                 userService
@@ -237,20 +208,7 @@ public class AdminController {
     @Operation(
             summary = "Delete user profile by specified ID (Admin only)",
             description = "Allows administrators to delete user's profile by its ID",
-            tags = {"Admin Operations"},
-            parameters = {
-                    @Parameter(
-                            name = "id",
-                            description = "ID of the user to be deleted",
-                            required = true,
-                            schema = @Schema(type = "long")
-                    ),
-                    @Parameter(
-                            name = "Accept-Language",
-                            description = "Locale for the response content (supported: 'uk', 'en', 'pl')",
-                            schema = @Schema(type = "string", example = "uk")
-                    )
-            }
+            tags = {"Admin Operations"}
     )
     @ApiResponse(
             responseCode = "204",
@@ -286,9 +244,11 @@ public class AdminController {
                     )
             }
     )
-    @DeleteMapping(FETCH_UPDATE_DELETE_USER_BY_ID)
+    @DeleteMapping(ID)
     public ResponseEntity<Void> deleteUserById(
-            @PathVariable long id, Locale locale
+            @Parameter(description = "User ID", example = "1") @PathVariable long id,
+            @Parameter(description = "Locale for the response content (supported: 'uk', 'en', 'pl')",
+                    name = "Accept-Language", in = ParameterIn.HEADER) Locale locale
     ) {
         userService.deleteUserById(id, locale);
         return ResponseEntity.noContent().build();

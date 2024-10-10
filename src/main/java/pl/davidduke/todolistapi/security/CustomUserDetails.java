@@ -1,5 +1,6 @@
 package pl.davidduke.todolistapi.security;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,6 +12,7 @@ import java.util.List;
 
 
 @RequiredArgsConstructor
+@Getter
 public class CustomUserDetails implements UserDetails {
     private final UserEntity user;
 
